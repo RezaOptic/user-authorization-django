@@ -13,7 +13,7 @@ def normalized_mobile(mobile):
     if not mobile:
         return None
     mobile = ''.join(re.findall("(\d+)", mobile))
-    r = re.findall("^(?:0|98|0098)(\d{10})$", mobile)
+    r = re.findall("^(?:0|98|0098)(\d{10})$|^(?:0|216|00216)(\d{8})$", mobile)
     if not r:
         return None
     r = r[0]
