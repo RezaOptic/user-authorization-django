@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'helpers.exceptions.HandleBusinessExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -131,3 +132,6 @@ BROKER_URL = os.getenv("CELERY_BROKER", "redis://localhost")
 
 redis_conn = redis.ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=1)
 # celery.conf.update(app.config)
+
+SMS_PANEL_URL = os.getenv("SMS_PANEL_URL", "http://127.0.0.1")
+SMS_PANEL_TOKEN = os.getenv("SMS_PANEL_TOKEN", "http://127.0.0.1")

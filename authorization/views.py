@@ -2,6 +2,8 @@ import json
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from authorization.logics.otp import set_otp, validate_otp
+from helpers.decorators import login_required
+from helpers.exceptions import AuthorizationError
 from .models import OTP, OTPVerify
 
 
@@ -21,4 +23,12 @@ def verify_otp(request):
         response = JsonResponse(data=None, status=200, safe=False)
         response["X-Access-Token"] = token
         return response
-    return JsonResponse(data={}, status=401)
+    raise AuthorizationError
+
+
+@require_http_methods(["GET"])
+@login_required
+def verify_token(request):
+    if request.user:
+        data = {"mobile_phone": request.user.mobile_phone}
+        return JsonResponse(data=data, status=200)

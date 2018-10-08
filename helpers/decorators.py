@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.models import User
+from authorization.models import User
 from functools import wraps
 
 from django.http import JsonResponse
@@ -8,6 +8,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
 
 from authorization.logics.otp import check_access_phone_number_to_otp, check_max_otp_request_and_block
 from authorization.models import OTP
+from helpers.exceptions import AuthorizationError
 
 
 def login_required(f):
@@ -15,16 +16,17 @@ def login_required(f):
     def wrapped(request, *args, **kwargs):
         s = Serializer(settings.SECRET_KEY)
         try:
-            token = request.headers.get('Authorization', None)
+            token = request.META.get('HTTP_AUTHORIZATION', None)
             data = s.loads(token)
-            request.user = User.objects.get(data['id'])
+            request.user = User.objects.get(id=data['id'])
         except SignatureExpired:
-            return JsonResponse(data={"message": "token is expire"}, status=401)
+            raise AuthorizationError("token is invalid")
+            # return JsonResponse(data={"message": "token is expire"}, status=401)
         except BadSignature:
-            return JsonResponse(data={"message": "token is invalid"}, status=401)
+            raise AuthorizationError("token is invalid")
         except Exception as e:
             print(e)
-            return JsonResponse(data={"message": "token is invalid"}, status=401)
+            raise AuthorizationError("token is invalid")
         return f(request, *args, **kwargs)
     return wrapped
 
@@ -38,18 +40,13 @@ def otp_firewall(**options):
                 if check_access_phone_number_to_otp(data["phone"]):
                     if not check_max_otp_request_and_block(data["phone"]):
                         print("max otp request")
-                        return JsonResponse(data={"message": "max otp request"}, status=401)
+                        raise AuthorizationError({"message": "max otp request"})
+                        # return JsonResponse(data={"message": "max otp request"}, status=401)
                 else:
                     print("check acess phone number")
-                    return JsonResponse(data={"message": "max otp request"}, status=401)
-            except ForbiddenError as ex:
-                print(ex)
-                raise ex
-            except HTTPException as ex:
-                print(ex)
-                raise ex
+                    raise AuthorizationError({"message": "max otp request"})
             except:
-                return JsonResponse(data={"message": "max otp request"}, status=401)
+                raise AuthorizationError({"message": "max otp request"})
             return f(request, *args, **kwargs)
         return wrapper
     return _login_required

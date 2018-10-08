@@ -18,5 +18,6 @@ from authorization import views
 
 urlpatterns = [
     path("otp", views.send_otp, name="send_otp"),
-    path("otp/verify", views.verify_otp, name="send_otp")
+    path("otp/verify", views.verify_otp, name="verify_otp"),
+    path("otp/verify/token", views.verify_token, name="verify_token")
 ]
