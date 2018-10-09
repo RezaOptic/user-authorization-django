@@ -1,8 +1,12 @@
 from datetime import datetime, timedelta
 
 from authorization.logics.users import generate_token
-from helpers.redis_manager import get_from_redis, save_to_redis, save_to_redis_with_score, delete_redis_by_key, \
-    get_from_redis_with_zrangebyscore
+from helpers.redis_manager import (get_from_redis,
+                                   save_to_redis,
+                                   save_to_redis_with_score,
+                                   delete_redis_by_key,
+                                   get_from_redis_with_zrangebyscore
+                                   )
 from helpers.utils import create_sso_otp
 from services.otp import send_otp
 
