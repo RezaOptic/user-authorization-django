@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from authorization.models import User
 from functools import wraps
@@ -36,17 +38,16 @@ def otp_firewall(**options):
         @wraps(f)
         def wrapper(request, *args, **kwargs):
             try:
-                data = OTP(strict=True).load(request.get_json() or {})[0] or {}
-                if check_access_phone_number_to_otp(data["phone"]):
-                    if not check_max_otp_request_and_block(data["phone"]):
+                data = OTP(strict=True).load(json.loads(request.body) or {})[0] or {}
+                if check_access_phone_number_to_otp(data["phone_number"]):
+                    if not check_max_otp_request_and_block(data["phone_number"]):
                         print("max otp request")
-                        raise AuthorizationError({"message": "max otp request"})
-                        # return JsonResponse(data={"message": "max otp request"}, status=401)
+                        raise AuthorizationError("max otp request")
                 else:
                     print("check acess phone number")
-                    raise AuthorizationError({"message": "max otp request"})
+                    raise AuthorizationError("max otp request")
             except:
-                raise AuthorizationError({"message": "max otp request"})
+                raise AuthorizationError("max otp request")
             return f(request, *args, **kwargs)
         return wrapper
     return _login_required
