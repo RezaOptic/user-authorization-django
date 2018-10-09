@@ -16,7 +16,7 @@ class AuthorizationError(Exception):
 
 
 class HandleBusinessExceptionMiddleware(MiddlewareMixin):
-    def process_exception(self,request, exception):
+    def process_exception(self, request, exception):
         if isinstance(exception, ValidationError):
             return JsonResponse(data=exception.args, status=400, safe=False)
         elif isinstance(exception, AuthorizationError):
