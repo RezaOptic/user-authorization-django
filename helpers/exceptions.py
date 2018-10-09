@@ -1,8 +1,6 @@
 """
 
 """
-import json
-
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 from marshmallow import ValidationError
@@ -18,7 +16,7 @@ class AuthorizationError(Exception):
 
 
 class HandleBusinessExceptionMiddleware(MiddlewareMixin):
-    def process_exception(self, exception):
+    def process_exception(self,request, exception):
         if isinstance(exception, ValidationError):
             return JsonResponse(data=exception.args, status=400, safe=False)
         elif isinstance(exception, AuthorizationError):
