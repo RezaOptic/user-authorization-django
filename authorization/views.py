@@ -1,6 +1,8 @@
 import json
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
+from marshmallow import ValidationError
+
 from authorization.logics.otp import set_otp, validate_otp
 from helpers.decorators import login_required, otp_firewall
 from helpers.exceptions import AuthorizationError
@@ -13,7 +15,7 @@ def send_otp(request):
     args = OTP(strict=True).load(json.loads(request.body or {}))[0]
     if set_otp(args["phone_number"]):
         return JsonResponse(status=204, data=None, safe=False)
-    raise AuthorizationError("Internal Service Error")
+    raise ValidationError("Internal Service Error")
 
 
 @require_http_methods(["POST"])
