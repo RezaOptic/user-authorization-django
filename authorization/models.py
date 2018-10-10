@@ -13,10 +13,7 @@ class User(AbstractUser):
 
     @staticmethod
     def get_or_create_user(phone):
-        user = User.objects.filter(mobile_phone=phone)
-        if user:
-            return user
-        user = User.objects.create_user(mobile_phone=phone, username=" ")
+        user, created = User.objects.get_or_create(mobile_phone=phone)
         return user
 
     USERNAME_FIELD = 'mobile_phone'

@@ -26,7 +26,7 @@ def verify_otp(request):
         response = JsonResponse(data=None, status=200, safe=False)
         response["X-Access-Token"] = token
         return response
-    raise AuthorizationError
+    raise AuthorizationError("otp invalid")
 
 
 @require_http_methods(["GET"])
