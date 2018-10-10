@@ -25,6 +25,4 @@ def normalized_mobile(mobile):
 
 
 def create_sso_otp():
-    return 1111
-    # mock return otp
-    # return random.randrange(1000, 9999)
+    return random.randrange(1000, 9999)
