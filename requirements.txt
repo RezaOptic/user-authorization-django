@@ -3,13 +3,13 @@ billiard==3.5.0.4
 celery==4.2.1
 certifi==2018.8.24
 chardet==3.0.4
-Django==2.1.2
+django>=2.1.11
 idna==2.7
 itsdangerous==0.24
 kombu==4.2.1
 marshmallow==2.15.6
 pytz==2018.5
 redis==2.10.6
-requests==2.19.1
+requests>=2.20.0
 urllib3>=1.24.2
 vine==1.1.4
